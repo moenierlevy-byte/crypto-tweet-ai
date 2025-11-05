@@ -25,8 +25,7 @@ export default function Home() {
         throw new Error(txt || "Generation failed");
       }
       const data = await res.json();
-      const list = Array.isArray(data.tweets) ? data.tweets : [];
-      setTweets(list);
+      setTweets(Array.isArray(data.tweets) ? data.tweets : []);
     } catch (err: any) {
       console.error(err);
       setError(err?.message || String(err));
@@ -38,59 +37,20 @@ export default function Home() {
   return (
     <div style={{ fontFamily: "Inter, system-ui, sans-serif", padding: 24 }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
-        <h1>TweetForge</h1>
-
+        <h1>TweetForge — Clean Test</h1>
         <div style={{ marginBottom: 12 }}>
-          <input
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-            placeholder="e.g. Bitcoin halving, Solana NFT drop"
-            style={{ width: "100%", padding: 10, fontSize: 16 }}
-          />
+          <input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="Topic..." style={{ width: "100%", padding: 10 }} />
         </div>
-
         <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={generate} disabled={loading} style={{ padding: "10px 16px" }}>
-            {loading ? "Generating..." : "Generate Tweets"}
-          </button>
-          <button
-            onClick={() => {
-              setTopic("");
-              setTweets([]);
-              setError("");
-            }}
-            style={{ padding: "10px 16px" }}
-          >
-            Reset
-          </button>
+          <button onClick={generate} disabled={loading} style={{ padding: "8px 12px" }}>{loading ? "Loading..." : "Call API"}</button>
+          <button onClick={() => { setTopic(""); setTweets([]); setError(""); }} style={{ padding: "8px 12px" }}>Reset</button>
         </div>
-
         {error && <div style={{ color: "crimson", marginTop: 12 }}>{error}</div>}
-
-        <div style={{ marginTop: 20 }}>
+        <div style={{ marginTop: 18 }}>
           {tweets.length > 0 && (
-            <>
-              <h2>Suggestions</h2>
-              <ul style={{ padding: 0, listStyle: "none", display: "grid", gap: 12 }}>
-                {tweets.map((t, i) => (
-                  <li key={i} style={{ border: "1px solid #eee", padding: 12, borderRadius: 8 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ whiteSpace: "pre-wrap" }}>{t.text}</div>
-                      </div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                        <button
-                          onClick={() => navigator.clipboard.writeText(t.text).catch(() => alert("Copy failed"))}
-                          style={{ padding: "6px 10px" }}
-                        >
-                          Copy
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {tweets.map((t, i) => <li key={i} style={{ padding: 8, border: "1px solid #eee", marginBottom: 8 }}>{t.text}</li>)}
+            </ul>
           )}
         </div>
       </div>
